@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 2ffc11b1f10553d45b363cd9dfe4c8a9
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301879
+  packageName: Female Runner Animset - Free Run&Sprint
+  packageVersion: 1.0
+  assetPath: Assets/FemaleRunnerAnimset/Controllers/Sprint/Sprint_Arcs.controller
+  uploadId: 708218

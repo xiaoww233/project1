@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: fa2e2386c73e1be408747db4709e0467
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301879
+  packageName: Female Runner Animset - Free Run&Sprint
+  packageVersion: 1.0
+  assetPath: Assets/FemaleRunnerAnimset/Controllers/Run/Run_L180.controller
+  uploadId: 708218
