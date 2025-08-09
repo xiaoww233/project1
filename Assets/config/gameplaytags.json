@@ -1,0 +1,28 @@
+{
+    "groups": [
+        {
+            "name": "1",
+            "comment": ""
+        },
+        {
+            "name": "1.2",
+            "comment": ""
+        },
+        {
+            "name": "1.2.3",
+            "comment": "你好"
+        },
+        {
+            "name": "1.32",
+            "comment": ""
+        },
+        {
+            "name": "1.32.2",
+            "comment": "我好"
+        },
+        {
+            "name": "kkk",
+            "comment": "ooo"
+        }
+    ]
+}

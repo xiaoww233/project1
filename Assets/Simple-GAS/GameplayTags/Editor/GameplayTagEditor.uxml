@@ -1,12 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ui:UXML
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ui="UnityEngine.UIElements"
-    xmlns:uie="UnityEditor.UIElements"
-    xsi:noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
->
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <Style src="project://database/Assets/Simple-GAS/GameplayTags/Editor/GameplayTagEditor.uss?fileID=7433441132597879392&amp;guid=5a3072e0cc82ca0449bde19ad0d4fd3e&amp;type=3#GameplayTagEditor" />
-	<ui:Label text="Hello World! From UXML" />
-	<ui:Label class="custom-label" text="Hello World! With Style" />
-
+    <ui:VisualElement name="ValueField" style="flex-grow: 0;">
+        <ui:DropdownField label="Json配置文件" name="JsonSelect" />
+        <ui:TextField label="标签全名" placeholder-text="X.Y.Z" name="NameField" />
+        <ui:TextField label="注释" placeholder-text="可选" name="CommentField" />
+        <ui:VisualElement name="ButtonField" style="flex-grow: 1; flex-direction: row;">
+            <ui:Button text="创建新节点" name="CreateNodeButton" style="width: 70px;" />
+            <ui:Label text="一定要点这个按钮保存-&gt;" display-tooltip-when-elided="true" style="right: 100px; position: absolute; height: 20px; flex-grow: 1; -unity-font-style: bold; -unity-text-align: middle-left; top: 2px; overflow: hidden; visibility: visible; display: flex; opacity: 1; width: 147px; color: rgb(255, 0, 0);" />
+            <ui:Button text="保存" name="SaveButton" style="white-space: nowrap; transform-origin: center; translate: 0 0; scale: 1 1; position: absolute; right: 0; width: 100px; color: rgb(255, 255, 255); font-size: 12px; -unity-text-outline-width: 0; -unity-text-outline-color: rgba(0, 0, 0, 0); text-shadow: 0 0 0 rgba(0, 0, 0, 0); letter-spacing: 10px; -unity-paragraph-spacing: 0; -unity-font-style: bold;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="DisplayField" style="flex-grow: 1;">
+        <ui:TreeView name="TagsDisplay" />
+    </ui:VisualElement>
 </ui:UXML>

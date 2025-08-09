@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Unity.PlasticSCM.Editor.WebApi;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 //标签树节点类
 public class GameplayTagsNode
 {
-    public string name;//这个节点的名称，注意是全程，即从根节点一直到此节点的名称
+    public string name { get; private set; }//这个节点的名称，注意是全称，即从根节点一直到此节点的名称
     public string comment;//这个节点注释
     public GameplayTagsNode father;//节点的父节点
     public Dictionary<string, GameplayTagsNode> children;//这个节点的子节点们，使用字典可以避免同级标签出现重复节点，并且这里的键是当前层的名称而不是全称
@@ -20,6 +21,23 @@ public class GameplayTagsNode
         this.name = name;
         this.comment = comment;
         children = new();
+    }
+    //这个函数得到全名中的最后一个标签（即当前节点所在层级的标签）
+    public string GetLastName()
+    {
+        return name.Split(".")[^1];//"^1"表示倒数第一个元素
+    }
+    //这个函数的作用是修改节点的名字（也会递归地修改所有子树的名字）
+    public void ChangeName(string newfullname)
+    {
+        father.children.Remove(GetLastName());
+        name = newfullname + name.Substring(newfullname.Length);
+        father.children.Add(GetLastName(), this);
+        Debug.Log(name);
+        foreach (GameplayTagsNode child in children.Values)
+        {
+            child.ChangeName(newfullname);
+        }
     }
 }
 
@@ -33,15 +51,21 @@ public class GameplayTags
     }
 
     //序列化为Json文件
-    void SerializeToJson()
+    public void SerializeToJson(string filename)
     {
         string json = JsonUtility.ToJson(new GameplayTagsSerialize(this), true);
-        string path = Path.Combine(Application.dataPath, "config", "gameplaytags.json");
+        Debug.Log(json);
+        string path = Path.Combine(Application.dataPath, "config", "GameplayTags", filename);
         File.WriteAllText(path, json);
     }
     //从json文件中加载tag树
-    void CopyFromJson(string json)
+    public void CopyFromJson(string json)
     {
+        if (json == "")
+        {
+            Debug.LogError("Json文件是空的");
+            return;
+        }
         var tool = JsonUtility.FromJson<GameplayTagsSerialize>(json);
         this.alltags = tool.AllTags.alltags;
     }
@@ -62,11 +86,19 @@ class GameplayTagsSerialize : ISerializationCallbackReceiver
     //因为是与GameplayTags绑定的工具类，所以规定必须传入一个GameplayTags
     public GameplayTagsSerialize(GameplayTags tags = null)
     {
-        this.AllTags = tags ?? new();//在没有实例传入时实例化一个gameplaytag对象，防止下面的函数空引用
+        this.AllTags = tags ?? new();
+        // 在没有实例传入时实例化一个gameplaytag对象，防止下面的函数空引用。
+        Debug.Log(AllTags);
         groups = new();
     }
     public void OnAfterDeserialize()
     {
+        AllTags ??= new();
+        // 原因是JsonUtilty在反序列化时只会调用无参的构造函数，并且会直接写入所有非[NonSerialized]字段，并且忽略属性。
+        // 在构造函数中进行的所有赋值都会被覆盖（除非是[NonSerialized]的）。
+        // 在这个类中AllTags字段是[NonSerialized]的，所以不会被反序列化系统理会，而又由于无参构造函数是空的。
+        // 而有参构造函数又不会被调用（尽管它可以被无参地调用），所以最终在反序化生成的实例中AllTags字段是NUll
+        // 因而，在这里将其赋值为一个新的实例。
         foreach (TagGroup group in groups)
         {
             RestoreFromJson(group);
