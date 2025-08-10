@@ -99,8 +99,14 @@ public class GameplayTagEditor : EditorWindow
                     NodeEditorWindow.ShowWindow(currentnode);
                     RefreshTreeView();
                 });
-                evt.menu.AppendAction("删除该节点",(menudata)=>
+                evt.menu.AppendAction("删除该节点", (menudata) =>
                 {
+                    if (currentnode.father == null)
+                    {
+                        tags.alltags.Remove(currentnode.name);
+                        RefreshTreeView();
+                        return;
+                    }
                     currentnode.father.children.Remove(currentnode.name.Split(".", System.StringSplitOptions.RemoveEmptyEntries)[^1]);
                     RefreshTreeView();
                 });
@@ -123,6 +129,8 @@ public class GameplayTagEditor : EditorWindow
         if (tags.alltags.Count == 0)
         {
             Debug.Log("在构建treeview数据时发现标签树为空");
+            tagdisplay.SetRootItems(new List<TreeViewItemData<GameplayTagsNode>>());
+            tagdisplay.Rebuild();
             return;
         }
         tagdisplay.SetRootItems(BuildTreeViewData());
@@ -169,6 +177,10 @@ public class GameplayTagEditor : EditorWindow
             {
                 lastnode = currentdic[taglist[i]];
                 currentdic = currentdic[taglist[i]].children;
+                if (i == taglist.Length - 1)
+                {
+                    lastnode.comment = commentfield.value;
+                }
                 //若是当前字典已经有标签，修改lastnode与currentdic，前进到下一个节点
             }
             else
@@ -176,7 +188,7 @@ public class GameplayTagEditor : EditorWindow
                 GameplayTagsNode tempnode = new(lastnode, currentname);
                 if (i == taglist.Length - 1)
                 {
-                    tempnode.comment = commentfield.text;
+                    tempnode.comment = commentfield.value;
                 }
                 currentdic.Add(taglist[i], tempnode);
                 lastnode = tempnode;
@@ -211,8 +223,8 @@ class NodeEditorWindow : EditorWindow
     {
         var wnd = CreateInstance<NodeEditorWindow>();
         wnd.titleContent = new GUIContent("节点编辑");
-        wnd.minSize = new(250,120);
-        wnd.maxSize = new(250,120);
+        wnd.minSize = new(250, 120);
+        wnd.maxSize = new(250, 120);
         wnd.node = node;
         wnd.ShowUtility();
     }

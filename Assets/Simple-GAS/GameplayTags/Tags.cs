@@ -28,16 +28,20 @@ public class GameplayTagsNode
         return name.Split(".")[^1];//"^1"表示倒数第一个元素
     }
     //这个函数的作用是修改节点的名字（也会递归地修改所有子树的名字）
-    public void ChangeName(string newfullname)
+    public void ChangeName(string newfullname, int? index = null)
     {
-        father.children.Remove(GetLastName());
-        name = newfullname + name.Substring(newfullname.Length);
-        father.children.Add(GetLastName(), this);
-        Debug.Log(name);
-        foreach (GameplayTagsNode child in children.Values)
+        string[] oldtags = name.Split(".", StringSplitOptions.RemoveEmptyEntries);
+        string[] newtags = newfullname.Split(".", StringSplitOptions.RemoveEmptyEntries);
+        index ??= newtags.Length - 1;
+        father?.children.Remove(oldtags[^1]);//这里要使用当前层的名称移除，而不是使用全称移除，否则会出现重复的键的现象
+        oldtags[(int)index] = newtags[(int)index];
+        name = string.Join(".", oldtags);
+        father?.children.Add(oldtags[^1], this);
+        foreach (GameplayTagsNode child in children.Values.ToList())//由于不能一边遍历字典一边修改字典，所以这里遍历副本
         {
-            child.ChangeName(newfullname);
+            child.ChangeName(newfullname,index);
         }
+        
     }
 }
 
@@ -112,9 +116,14 @@ class GameplayTagsSerialize : ISerializationCallbackReceiver
             Debug.LogError("在序列化前GameplayTags字段为空，可能是在构造时没有传入");
             return;
         }
+        groups.Clear();
         foreach (GameplayTagsNode root in AllTags.alltags.Values)
         {
             TraverseAndAdd(root);
+        }
+        foreach (TagGroup group in groups)
+        {
+            Debug.Log(group.name);
         }
     }
     //辅助函数，用来遍历一棵树中的所有节点并将其添加进List中
@@ -141,6 +150,10 @@ class GameplayTagsSerialize : ISerializationCallbackReceiver
             {
                 lastnode = currentdic[taglist[i]];
                 currentdic = currentdic[taglist[i]].children;
+                if (i == taglist.Length - 1)
+                {
+                    lastnode.comment = group.comment;
+                }
                 //若是当前字典已经有标签，修改lastnode与currentdic，前进到下一个节点
             }
             else
