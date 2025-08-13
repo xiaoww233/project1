@@ -1,7 +1,9 @@
 {
     "name": "Simple-GAS-Core",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "GUID:7d485e86dd3e0a343a3c03041b65ea48"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

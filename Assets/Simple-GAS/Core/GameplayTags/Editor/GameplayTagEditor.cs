@@ -231,7 +231,7 @@ class NodeEditorWindow : EditorWindow
     void CreateGUI()
     {
         var root = rootVisualElement;
-        var asset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Simple-GAS/GameplayTags/Editor/NodeEditor.uxml");
+        var asset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Simple-GAS/Core/GameplayTags/Editor/NodeEditor.uxml");
         asset.CloneTree(root);
 
         namefield = root.Q<TextField>("NameField");
